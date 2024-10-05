@@ -8,4 +8,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Popen("python ./manage.py runbotl")
         Popen("python ./manage.py runbotv")
+        Popen("python ./manage.py commitdata")
         
