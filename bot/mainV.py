@@ -15,7 +15,8 @@ channel = TELEGRAM_CHANNEL_ID_V
 
 
 #check channel for new post and send link
-@bot.channel_post_handler(func=lambda msg: msg.sender_chat.id == channel)
+@bot.channel_post_handler(func=lambda msg: msg.sender_chat.id == channel, content_types=['audio', 'photo', 'voice', 'video', 'document',
+                'text', 'location', 'contact', 'sticker'])
 def test(message):
     bot.send_message(chat_id=admin_id, text= f"https://t.me/testl_lbot?start={message.id}")
 

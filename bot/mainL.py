@@ -1,7 +1,7 @@
 import telebot
 from bot.models import UserModel, ChannelModel, PlaceInBot
 from bot.messages import *
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from tBOT.settings import TELEGRAM_BOT_TOKEN_L
 
 
@@ -129,8 +129,11 @@ def start(message):
         if user.is_join:
             post_id = message.text.split(" ")[-1]
             keyboard=InlineKeyboardMarkup(row_width=1)
+            keyboardg = ReplyKeyboardMarkup(resize_keyboard=True)
             keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/edio_pobot?start={post_id}"))
+            print(message.contact)
             bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
+            
         else:
             start_user(message, user)
         
