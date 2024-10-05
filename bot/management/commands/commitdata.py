@@ -5,6 +5,7 @@ class Command(BaseCommand):
     help = "start telegram bot"
 
     def handle(self, *args, **options):
+        print("commit start..")
         while True:
             time.sleep(21600)
             system("git add .")
