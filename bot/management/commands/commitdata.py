@@ -8,7 +8,9 @@ class Command(BaseCommand):
         print("commit start..")
         while True:
             system("git add . -A")
-            system("git commit -a -m 'db update'")
+            time.sleep(3)
+            system('git commit -a -m "db update"')
+            time.sleep(3)
             system("git push")
             time.sleep(21600)
         
