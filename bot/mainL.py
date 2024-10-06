@@ -83,7 +83,7 @@ def callback_handler(call):
                 )]
                 keyboard=InlineKeyboardMarkup(row_width=1)
                 keyboard.add(InlineKeyboardButton(text="اضافه کردن اسپانسر", callback_data="add_admin"))
-                for a in admin:
+                for a in admis:
                     keyboard.add(InlineKeyboardButton(text=a, callback_data='delete_admin'))
                 bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=keyboard)
 
