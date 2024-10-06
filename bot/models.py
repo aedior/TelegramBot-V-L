@@ -8,6 +8,7 @@ class PlaceInBot(models.IntegerChoices):
     ADD_CHANNEL = 2, "افزودن چنل"
     DELET_CHANNEL = 3, "دلت چنل"
     ALL_MESSAGE = 4, "پیام همگانی"
+    DELETE_ADMIN = 5, "حذف ادمین"
     
 
 class UserModel(models.Model):

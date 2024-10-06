@@ -46,6 +46,10 @@ def callback_handler(call):
                 bot.send_message(user.chat_id, "لطفا ایدی عددی فرد مورد نظر را ارسال نمیایید.")
                 user.placeInBot = PlaceInBot.ADD_ADMIN
                 user.save()
+            case "delete_admin":
+                bot.send_message(user.chat_id, "لطفا ایدی عددی فرد مورد نظر را ارسال نمیایید.")
+                user.placeInBot = PlaceInBot.DELETE_ADMIN
+                user.save()
             case "channel":
                 required_chann = [c.channel_username for c in ChannelModel.objects.all()]
                 
@@ -73,6 +77,16 @@ def callback_handler(call):
                 bot.send_message(user.chat_id, "لطفا پیام همگانی خود را در قالب یک متن نوشته و ارسال کنید")
                 user.placeInBot = PlaceInBot.ALL_MESSAGE
                 user.save()
+            case "admins":
+                admis = [UserModel.objects.get(
+                    is_admin=True
+                )]
+                keyboard=InlineKeyboardMarkup(row_width=1)
+                keyboard.add(InlineKeyboardButton(text="اضافه کردن اسپانسر", callback_data="add_admin"))
+                for a in admin:
+                    keyboard.add(InlineKeyboardButton(text=a, callback_data='delete_admin'))
+                bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=keyboard)
+
                 
                     
                     
@@ -90,7 +104,7 @@ def start_admin(message, user):
     
     keyboard= InlineKeyboardMarkup(row_width=1)
     a=InlineKeyboardButton(text="تعداد یوزر", callback_data="count")
-    b=InlineKeyboardButton(text="اضافه کردن ادمین", callback_data="add_admin")
+    b=InlineKeyboardButton(text="ادمین", callback_data="admins")
     c=InlineKeyboardButton(text="کانال های اسپاسنر", callback_data="channel")
     d=InlineKeyboardButton(text="  پیام همگانی", callback_data="all_message")
     
@@ -206,6 +220,24 @@ def check_membership(message):
         except Exception as e:
             print(e)
             bot.reply_to(message, " خطایی رخ داده است")
+
+    if user.placeInBot == PlaceInBot.DELETE_ADMIN:
+        try:
+            adminID = int(message.text)
+        except:
+            return bot.reply_to(message, "لطفا آیدی عددی ادمین را وارد کنید")
+        
+        try:
+            admin=UserModel.objects.get(
+                telegram_user_num = adminID
+            )
+        except:
+            return bot.reply_to(message, "این ایدی عددی یافت نشد.")
+        
+        admin.is_admin = False
+        admin.save()
+        bot.reply_to(message, "این آیدی دیگر ادمین نیست")
+        
             
             
 # راه‌اندازی ربات
