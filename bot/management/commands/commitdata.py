@@ -7,8 +7,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("commit start..")
         while True:
-            time.sleep(21600)
-            system("git add .")
+            system("git add . -A")
             system("git commit -a -m 'db update'")
             system("git push")
+            time.sleep(21600)
         
