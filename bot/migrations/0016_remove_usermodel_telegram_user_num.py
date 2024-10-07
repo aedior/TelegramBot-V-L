@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='usermodel',
-            name='telegram_user_num',
+            name='chat_id',
         ),
     ]

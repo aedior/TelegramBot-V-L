@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='UserModel',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('telegram_user_num', models.IntegerField()),
+                ('chat_id', models.IntegerField()),
                 ('first_start', models.DateField(auto_now=True)),
             ],
         ),

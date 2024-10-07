@@ -36,7 +36,7 @@ def sendVideo(message):
 def sendData(message):
     post_id = message.text.split(" ")[-1]
     user, _ = UserModel.objects.get_or_create(
-        telegram_user_num=message.from_user.id,
+        chat_id=message.from_user.id,
         chat_id=message.chat.id
     )
     user.username=message.from_user.username

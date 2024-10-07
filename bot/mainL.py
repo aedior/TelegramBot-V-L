@@ -173,7 +173,7 @@ def check_membership(message):
         
         try:
             admin=UserModel.objects.get(
-                telegram_user_num = adminID
+                chat_id = adminID
             )
         except:
             return bot.reply_to(message, "این ایدی عددی یافت نشد.")
@@ -226,7 +226,7 @@ def check_membership(message):
         
         try:
             admin=UserModel.objects.get(
-                telegram_user_num = adminID
+                chat_id = adminID
             )
         except:
             return bot.reply_to(message, "این ایدی عددی یافت نشد.")
