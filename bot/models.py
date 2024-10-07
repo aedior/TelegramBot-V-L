@@ -12,7 +12,7 @@ class PlaceInBot(models.IntegerChoices):
     
 
 class UserModel(models.Model):
-    username = models.CharField(default="none", max_length=100, null=True, blank=True)
+    _username = models.CharField(default="none", max_length=100, null=True, blank=True)
     placeInBot = models.IntegerField(choices=PlaceInBot.choices, default=PlaceInBot.NONE)
     chat_id = models.IntegerField()
     first_start = models.DateTimeField(auto_now=True)
@@ -21,19 +21,29 @@ class UserModel(models.Model):
     can_add_admin = models.BooleanField(default=False)
     postId = models.IntegerField(default=0)
 
+    @property
+    def username(self):
+        if self._username is not None:
+            return f"@{self._username}"
+        else:
+            return "بدون نام کاربری"
+    
+    
 class ChannelModel(models.Model):
     _channel_username = models.CharField(max_length=100)
     
     @property
     def channel_username(self):
         return f"@{self._channel_username}"
-    
-class VideoModel(models.Model):
-    user_id = models.IntegerField()
-    user_username = models.CharField(max_length=100)
-    video_id = models.CharField(max_length=500)
-    
-class PhotoModel(models.Model):
-    user_id = models.IntegerField()
-    user_username = models.CharField(max_length=100)
-    photo_id = models.CharField(max_length=500)
+
+
+
+class FileType(models.IntegerChoices):
+    VIDEO = 1, "ویدیو"
+    PHOTO = 2, "عکس"
+
+
+class FileModel(models.Model):
+    user = models.ForeignKey(UserModel, on_delete=models.SET_NULL, null=True, blank=True)
+    hash_id = models.CharField(max_length=500)
+    file_type = models.IntegerField(choices=FileType.choices)

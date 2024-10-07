@@ -14,7 +14,7 @@ def getUser(message, bot):
     user, _ = UserModel.objects.get_or_create(
         chat_id=message.chat.id,
     )
-    user.username=message.from_user.username
+    user._username=message.from_user.username
     user.save()
     
     return user

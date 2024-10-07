@@ -3,7 +3,7 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import TeleBot
 from pprint import pprint
-from bot.models import UserModel, ChannelModel, PlaceInBot, VideoModel, PhotoModel
+from bot.models import UserModel, ChannelModel, PlaceInBot, FileType, FileModel
 from tBOT.settings import TELEGRAM_BOT_TOKEN_V, TELEGRAM_ADMIN_ID_V, TELEGRAM_CHANNEL_ID_V
 from bot.helper import *
 from time import sleep
@@ -23,27 +23,45 @@ def sendlink(message):
     bot.send_message(chat_id=admin_id[0], text= f"https://t.me/waitingggbot?start={message.id}")
 
 
-@bot.message_handler(content_types=['video'])
-def sendVideo(message):
-    for admin in admin_id:
-        bot.send_message(admin, f"{message.from_user.id, '@'+ message.from_user.username}")
-        bot.send_video(admin, message.video.file_id)
-    video, _ = VideoModel.objects.get_or_create(
-        user_id = message.from_user.id ,
-        user_username =  message.from_user.username,
-        video_id = message.video.file_id
-    )
-    video.save()
+# @bot.message_handler(content_types=['video'])
+# def sendVideo(message):
+#     user = getUser(message, bot)
+#     for admin in admin_id:
+#         bot.send_message(admin, f"{user.chat_id}, {user.username}")
+#         bot.send_video(admin, message.video.file_id)
+#     video, _ = VideoModel.objects.get_or_create(
+#         user_id = message.from_user.id ,
+#         user_username =  message.from_user.username,
+#         video_id = message.video.file_id
+#     )
+#     video.save()
 
-@bot.message_handler(content_types=['photo'])
+@bot.message_handler(content_types=['photo', 'video'])
 def sendphoto(message):
+    
+    # set data
+    user = getUser(message, bot)
+    
+    # set conntent type to file
+    if message.content_type == "photo":
+        file = message.photo
+        file_type = FileType.PHOTO
+        send = bot.send_photo
+    elif message.content_type == "video":
+        file = message.video
+        file_type = FileType.VIDEO
+        send = bot.send_video
+    else:
+        raise ValueError(f"content type {message.content_type} not set in models")
+    
+    # send to admins
     for admin in admin_id:
-        bot.send_message(admin, f"{message.from_user.id, '@'+ message.from_user.username}")
-        bot.send_photo(admin, message.photo.file_id)
-    photo, _ = PhotoModel.objects.get_or_create(
-        user_id = message.from_user.id ,
-        user_username =  message.from_user.username,
-        photo_id = message.photo.file_id
+        bot.send_message(admin, f"{user.chat_id}, {user.username}")
+        send(admin, file.file_id)
+    photo, _ = FileModel.objects.get_or_create(
+        user=user,
+        photo_id = file.file_id,
+        file_type=file_type
     )
     photo.save()
 
