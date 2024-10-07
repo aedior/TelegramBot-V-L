@@ -17,7 +17,7 @@ bot = telebot.TeleBot(TOKEN)
 
 def checkInChannels(user: UserModel):
     isJoined = True
-    for channel in required_channels:
+    for channel in [c.channel_username for c in ChannelModel.objects.all()]:
         try:
             getMember=bot.get_chat_member(channel, user.telegram_user_num)
             if getMember.status == 'left':
