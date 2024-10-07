@@ -18,7 +18,6 @@ channel = TELEGRAM_CHANNEL_ID_V
 @bot.channel_post_handler(func=lambda msg: msg.sender_chat.id == channel, content_types=['audio', 'photo', 'voice', 'video', 'document',
                 'text', 'location', 'contact', 'sticker'])
 def sendlink(message):
-    print(message)
     bot.send_message(chat_id=admin_id, text= f"https://t.me/waitingggbot?start={message.id}")
 
 @bot.message_handler(content_types=['video'])
