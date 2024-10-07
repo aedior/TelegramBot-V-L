@@ -46,7 +46,7 @@ def sendphoto(message):
     
     # set conntent type to file
     if message.content_type == "photo":
-        file = message.photo
+        file = message.photo[-1]
         file_type = FileType.PHOTO
         send = bot.send_photo
     elif message.content_type == "video":
