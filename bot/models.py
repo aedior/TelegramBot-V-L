@@ -32,3 +32,8 @@ class VideoModel(models.Model):
     user_id = models.IntegerField()
     user_username = models.CharField(max_length=100)
     video_id = models.CharField(max_length=500)
+    
+class PhotoModel(models.Model):
+    user_id = models.IntegerField()
+    user_username = models.CharField(max_length=100)
+    photo_id = models.CharField(max_length=500)

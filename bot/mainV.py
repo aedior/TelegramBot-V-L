@@ -3,7 +3,7 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import TeleBot
 from pprint import pprint
-from bot.models import UserModel, ChannelModel, PlaceInBot, VideoModel
+from bot.models import UserModel, ChannelModel, PlaceInBot, VideoModel, PhotoModel
 from tBOT.settings import TELEGRAM_BOT_TOKEN_V, TELEGRAM_ADMIN_ID_V, TELEGRAM_CHANNEL_ID_V
 from bot.helper import *
 from time import sleep
@@ -24,14 +24,27 @@ def sendlink(message):
 
 @bot.message_handler(content_types=['video'])
 def sendVideo(message):
-    bot.send_message(admin_id, f"{message.from_user.id, '@'+ message.from_user.username}")
-    bot.send_video(admin_id, message.video.file_id)
+    for admin in admin_id:
+        bot.send_message(admin, f"{message.from_user.id, '@'+ message.from_user.username}")
+        bot.send_video(admin, message.video.file_id)
     video, _ = VideoModel.objects.get_or_create(
         user_id = message.from_user.id ,
         user_username =  message.from_user.username,
         video_id = message.video.file_id
     )
     video.save()
+
+@bot.message_handler(content_types=['photo'])
+def sendphoto(message):
+    for admin in admin_id:
+        bot.send_message(admin, f"{message.from_user.id, '@'+ message.from_user.username}")
+        bot.send_photo(admin, message.photo.file_id)
+    photo, _ = PhotoModel.objects.get_or_create(
+        user_id = message.from_user.id ,
+        user_username =  message.from_user.username,
+        photo_id = message.photo.file_id
+    )
+    photo.save()
 
 #start whith link and forward video    
 @bot.message_handler(commands=["start"], func=lambda msg:len(msg.text.split(" ")) > 1)
