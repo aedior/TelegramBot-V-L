@@ -13,7 +13,6 @@ class PlaceInBot(models.IntegerChoices):
 
 class UserModel(models.Model):
     username = models.CharField(max_length=100, null=True, blank=True)
-    telegram_user_num = models.IntegerField()
     placeInBot = models.IntegerField(choices=PlaceInBot.choices, default=PlaceInBot.NONE)
     chat_id = models.IntegerField()
     first_start = models.DateTimeField(auto_now=True)

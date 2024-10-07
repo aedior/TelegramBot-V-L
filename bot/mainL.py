@@ -15,11 +15,26 @@ required_channels = [c.channel_username for c in ChannelModel.objects.all()]
 bot = telebot.TeleBot(TOKEN)
 
 
+def showPost(user):
+    keyboard=InlineKeyboardMarkup(row_width=1)
+    keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={user.postId}"))
+    bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
+
+def getUser(message):
+    
+    user, _ = UserModel.objects.get_or_create(
+        chat_id=message.chat.id,
+    )
+    user.username=message.from_user.username
+    user.save()
+    
+    return user
+
 def checkInChannels(user: UserModel):
     isJoined = True
     for channel in [c.channel_username for c in ChannelModel.objects.all()]:
         try:
-            getMember=bot.get_chat_member(channel, user.telegram_user_num)
+            getMember=bot.get_chat_member(channel, user.chat_id)
             if getMember.status == 'left':
                 isJoined = False
                 
@@ -34,10 +49,8 @@ def checkInChannels(user: UserModel):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
-    
-        user = UserModel.objects.get(
-            telegram_user_num=call.message.chat.id
-        )
+        user = getUser(call.message)
+
         match call.data:
             case "count":
                 countuser = UserModel.objects.all().count()
@@ -73,7 +86,7 @@ def callback_handler(call):
                     if user.postId == 0:
                         bot.send_message(user.chat_id, welcome_user)
                     else:
-                        keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={user.postId}"))
+                        showPost(user)
                 else:
                     bot.answer_callback_query(call.id, text="شما عضو چنل ها نیستید", show_alert=True)
             case "all_message":
@@ -92,19 +105,9 @@ def callback_handler(call):
 
                 
                     
-                    
-                
-                
-                
-                
-        
-        
 
 def start_admin(message, user):
-    user = UserModel.objects.get(
-        telegram_user_num=message.from_user.id
-    )
-    
+        
     keyboard= InlineKeyboardMarkup(row_width=1)
     a=InlineKeyboardButton(text="تعداد یوزر", callback_data="count")
     b=InlineKeyboardButton(text="ادمین", callback_data="admins")
@@ -130,32 +133,19 @@ def start_user(message, user):
         bot.send_message(chat_id=user.chat_id, text=welcome_messages, reply_markup=keyboard)
     
 
-
 # تابع شروع
 @bot.message_handler(commands=['start'])
 def start(message):
-    userCount = UserModel.objects.all().count()
-    user, _ = UserModel.objects.get_or_create(
-        telegram_user_num=message.from_user.id,
-        chat_id=message.chat.id
-    )
-    user.username=message.from_user.username
-    user.save()
+    startText = message.text.split(" ")
+    user = getUser(message)
     
-    if len(message.text.split(" ")) > 1:
-        
-        UserModel.objects.get_or_create(
-            telegram_user_num = message.from_user.id,
-            postId = message.text.split(" ")[-1]
-        )
+    if len(startText) > 1 or user.postId != 0:
+        post_id = startText[-1]
+        user.postId = post_id
+        user.save()
         checkInChannels(user)
         if user.is_join:
-            post_id = message.text.split(" ")[-1]
-            keyboard=InlineKeyboardMarkup(row_width=1)
-            keyboardg = ReplyKeyboardMarkup(resize_keyboard=True)
-            keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={post_id}"))
-            bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
-            
+            showPost(user)
         else:
             start_user(message, user)
         
@@ -172,9 +162,8 @@ def start(message):
 # تابع چک کردن عضویت
 @bot.message_handler(func=lambda message: True)
 def check_membership(message):
-    user = UserModel.objects.get(
-        telegram_user_num=message.from_user.id
-    )
+    user =  getUser(message)
+
     
     if user.can_add_admin and user.placeInBot == PlaceInBot.ADD_ADMIN:
         try:
@@ -246,8 +235,6 @@ def check_membership(message):
         admin.save()
         bot.reply_to(message, "این آیدی دیگر ادمین نیست")
         
-            
-            
 # راه‌اندازی ربات
 print("bot started ...")
 bot.polling(none_stop=True)
