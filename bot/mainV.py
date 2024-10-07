@@ -73,7 +73,9 @@ def sendData(message):
     try:
         msg = bot.copy_message(chat_id=user.chat_id, from_chat_id=channel, message_id=post_id, protect_content=False)
         bot.send_message(user.chat_id, "این پیام بعد از 30 ثانیه حذف خواهد شد.")
-        bot.delete_message(user.chat_id, msg.message_id, 30)
+        sleep(25)
+        bot.delete_message(user.chat_id, msg.message_id)
+     
     except Exception as e:
         print(e)
         bot.reply_to(message, "پست مورد نظر یافت نشد.")
