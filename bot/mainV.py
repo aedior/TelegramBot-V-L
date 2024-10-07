@@ -38,7 +38,7 @@ def sendData(message):
     post_id = message.text.split(" ")[-1]
     user = getUser(message, bot)
     try:
-        bot.forward_message(chat_id=user.chat_id, from_chat_id=channel, message_id=post_id, protect_content=True)
+        bot.copy_message(chat_id=user.chat_id, from_chat_id=channel, message_id=post_id, protect_content=False)
     except Exception as e:
         print(e)
         bot.reply_to(message, "پست مورد نظر یافت نشد.")
