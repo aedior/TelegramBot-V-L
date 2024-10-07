@@ -3,6 +3,7 @@ from bot.models import UserModel, ChannelModel, PlaceInBot
 from bot.messages import *
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from tBOT.settings import TELEGRAM_BOT_TOKEN_L
+from bot.helper import *
 
 
 TOKEN = TELEGRAM_BOT_TOKEN_L
@@ -15,41 +16,10 @@ required_channels = [c.channel_username for c in ChannelModel.objects.all()]
 bot = telebot.TeleBot(TOKEN)
 
 
-def showPost(user):
-    keyboard=InlineKeyboardMarkup(row_width=1)
-    keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={user.postId}"))
-    bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
-
-def getUser(message):
-    
-    user, _ = UserModel.objects.get_or_create(
-        chat_id=message.chat.id,
-    )
-    user.username=message.from_user.username
-    user.save()
-    
-    return user
-
-def checkInChannels(user: UserModel):
-    isJoined = True
-    for channel in [c.channel_username for c in ChannelModel.objects.all()]:
-        try:
-            getMember=bot.get_chat_member(channel, user.chat_id)
-            if getMember.status == 'left':
-                isJoined = False
-                
-        except Exception as e:
-            print(e)
-            isJoined = False
-            break
-    user.is_join = isJoined
-    user.save()
-
-
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
-        user = getUser(call.message)
+        user = getUser(call.message, bot)
 
         match call.data:
             case "count":
@@ -80,13 +50,13 @@ def callback_handler(call):
                 user.placeInBot = PlaceInBot.DELET_CHANNEL
                 user.save()
             case "join":
-                checkInChannels(user)
+                checkInChannels(user, bot)
                 if user.is_join:
                     bot.delete_message(user.chat_id, call.message.message_id, 2)
                     if user.postId == 0:
                         bot.send_message(user.chat_id, welcome_user)
                     else:
-                        showPost(user)
+                        showPost(user, bot)
                 else:
                     bot.answer_callback_query(call.id, text="شما عضو چنل ها نیستید", show_alert=True)
             case "all_message":
@@ -137,20 +107,20 @@ def start_user(message, user):
 @bot.message_handler(commands=['start'])
 def start(message):
     startText = message.text.split(" ")
-    user = getUser(message)
+    user = getUser(message, bot)
     
     if len(startText) > 1 or user.postId != 0:
         post_id = startText[-1]
         user.postId = post_id
         user.save()
-        checkInChannels(user)
+        checkInChannels(user, bot)
         if user.is_join:
-            showPost(user)
+            showPost(user, bot)
         else:
             start_user(message, user)
         
     else:
-        checkInChannels(user)
+        checkInChannels(user, bot)
         
         if user.is_admin:
             start_admin(message, user)
