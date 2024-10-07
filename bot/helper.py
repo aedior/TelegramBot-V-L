@@ -9,7 +9,7 @@ def showPost(user, bot):
     keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={user.postId}"))
     bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
 
-def getUser(message):
+def getUser(message, bot):
     
     user, _ = UserModel.objects.get_or_create(
         chat_id=message.chat.id,
