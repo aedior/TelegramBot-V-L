@@ -160,6 +160,7 @@ def check_membership(message):
             
         except Exception as e:
             print(e)
+            return bot.reply_to(message, "کانال مورد نظر یافت نشد")
             
             
     if user.placeInBot == PlaceInBot.DELET_CHANNEL:
@@ -172,6 +173,7 @@ def check_membership(message):
             
         except Exception as e:
             print(e)
+            return bot.reply_to(message, "کانال مورد نظر یافت نشد")
             
     if user.placeInBot == PlaceInBot.ALL_MESSAGE:
         try:
@@ -186,7 +188,7 @@ def check_membership(message):
             
         except Exception as e:
             print(e)
-            bot.reply_to(message, " خطایی رخ داده است")
+            return bot.reply_to(message, " خطایی رخ داده است")
 
     if user.placeInBot == PlaceInBot.DELETE_ADMIN:
         try:
@@ -204,6 +206,9 @@ def check_membership(message):
         admin.is_admin = False
         admin.save()
         bot.reply_to(message, "این آیدی دیگر ادمین نیست")
+        
+    user.placeInBot = 0
+    user.save()
         
 # راه‌اندازی ربات
 print("bot started ...")

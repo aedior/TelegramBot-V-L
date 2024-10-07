@@ -42,8 +42,6 @@ def sendphoto(message):
     # set data
     user = getUser(message, bot)
     
-    print(message)
-    
     # set conntent type to file
     if message.content_type == "photo":
         file = message.photo[-1]
