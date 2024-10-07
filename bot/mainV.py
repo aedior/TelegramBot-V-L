@@ -42,6 +42,8 @@ def sendphoto(message):
     # set data
     user = getUser(message, bot)
     
+    print(message)
+    
     # set conntent type to file
     if message.content_type == "photo":
         file = message.photo
@@ -60,7 +62,7 @@ def sendphoto(message):
         send(admin, file.file_id)
     photo, _ = FileModel.objects.get_or_create(
         user=user,
-        photo_id = file.file_id,
+        hash_id = file.file_id,
         file_type=file_type
     )
     photo.save()
