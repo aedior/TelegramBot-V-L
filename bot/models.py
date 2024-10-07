@@ -20,6 +20,7 @@ class UserModel(models.Model):
     is_join = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     can_add_admin = models.BooleanField(default=False)
+    postId = models.IntegerField(default=0)
 
 class ChannelModel(models.Model):
     _channel_username = models.CharField(max_length=100)

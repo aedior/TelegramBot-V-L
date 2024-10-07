@@ -70,7 +70,10 @@ def callback_handler(call):
                 checkInChannels(user)
                 if user.is_join:
                     bot.delete_message(user.chat_id, call.message.message_id, 2)
-                    bot.send_message(user.chat_id, welcome_user)
+                    if user.postId == 0:
+                        bot.send_message(user.chat_id, welcome_user)
+                    else:
+                        keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={user.postId}"))
                 else:
                     bot.answer_callback_query(call.id, text="شما عضو چنل ها نیستید", show_alert=True)
             case "all_message":
@@ -140,6 +143,11 @@ def start(message):
     user.save()
     
     if len(message.text.split(" ")) > 1:
+        
+        UserModel.objects.get_or_createcreate(
+            telegram_user_num = message.from_user.id,
+            postId = message.text.split(" ")[-1]
+        )
         checkInChannels(user)
         if user.is_join:
             post_id = message.text.split(" ")[-1]
