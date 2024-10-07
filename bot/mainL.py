@@ -144,7 +144,7 @@ def start(message):
             post_id = message.text.split(" ")[-1]
             keyboard=InlineKeyboardMarkup(row_width=1)
             keyboardg = ReplyKeyboardMarkup(resize_keyboard=True)
-            keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/edio_pobot?start={post_id}"))
+            keyboard.add(InlineKeyboardButton(text="مشاهده", url=f"https://t.me/badiidaaybot?start={post_id}"))
             bot.send_message(user.chat_id, text="از گزینه های زیر استفاده نمایید", reply_markup=keyboard)
             
         else:
