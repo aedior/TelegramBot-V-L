@@ -144,7 +144,7 @@ def start(message):
     
     if len(message.text.split(" ")) > 1:
         
-        UserModel.objects.get_or_createcreate(
+        UserModel.objects.get_or_create(
             telegram_user_num = message.from_user.id,
             postId = message.text.split(" ")[-1]
         )
