@@ -109,7 +109,7 @@ def start(message):
     startText = message.text.split(" ")
     user = getUser(message, bot)
     
-    if len(startText) > 1 or user.postId != 0:
+    if len(startText) > 1:
         post_id = startText[-1]
         user.postId = post_id
         user.save()
