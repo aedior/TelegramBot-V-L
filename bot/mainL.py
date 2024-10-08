@@ -22,6 +22,7 @@ def callback_handler(call):
         user = getUser(call.message, bot)
 
         match call.data:
+            
             case "count":
                 countuser = UserModel.objects.all().count()
                 bot.send_message(user.chat_id, f"تعداد کاربران-->{countuser}")
@@ -38,8 +39,9 @@ def callback_handler(call):
                 
                 keyboard=InlineKeyboardMarkup(row_width=1)
                 keyboard.add(InlineKeyboardButton(text="اضافه کردن اسپانسر", callback_data="add_channel"))
+                keyboard.add(InlineKeyboardButton(text="حذف چنل اسپانسر", callback_data="delete"))
                 for c in required_chann:
-                    keyboard.add(InlineKeyboardButton(text=c, callback_data='delete'))
+                    keyboard.add(InlineKeyboardButton(text=c, callback_data=c))
                 bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=keyboard)
             case "add_channel":
                 bot.send_message(user.chat_id, "لطفا ایدی کانال مورد نظر را بدون (@) ارسال نمیایید.")
@@ -72,7 +74,10 @@ def callback_handler(call):
                 for a in admis:
                     keyboard.add(InlineKeyboardButton(text=a, callback_data='delete_admin'))
                 bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=keyboard)
-
+            case _:
+                channel_id = call.data
+                count = bot.get_chat_member_count(channel_id)
+                bot.send_message(call.message.chat.id, f"تعداد عضوشدگان {channel_id}: {count}")
                 
                     
 
