@@ -212,4 +212,4 @@ def check_membership(message):
         
 # راه‌اندازی ربات
 print("bot started ...")
-bot.polling(none_stop=True)
+bot.infinity_polling(interval=0, timeout=20)
