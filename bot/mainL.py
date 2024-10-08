@@ -77,7 +77,12 @@ def callback_handler(call):
             case _:
                 channel_id = call.data
                 count = bot.get_chat_member_count(channel_id)
-                bot.send_message(call.message.chat.id, f"تعداد عضوشدگان {channel_id}: {count}")
+                ChannelModel.objects.get_or_create(
+                    _channel_username = channel_id.split("@")
+                )
+                countR = count - ChannelModel.users
+                user
+                bot.send_message(call.message.chat.id, f"تعداد عضوشدگان {channel_id}: \n {countR}")
                 
                     
 
@@ -159,8 +164,11 @@ def check_membership(message):
         
     if user.placeInBot == PlaceInBot.ADD_CHANNEL:
         try:
+            count = bot.get_chat_member_count(f"@{message.text}")
+            channelcount=ChannelModel(users=count)
             channeladd=ChannelModel(_channel_username=message.text)
             channeladd.save()
+            channelcount.save()
             bot.reply_to(message, "کانال مورد نظر در لیست اسپانسر ها اضافه شد")
             
         except Exception as e:
