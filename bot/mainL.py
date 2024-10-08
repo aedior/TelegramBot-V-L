@@ -76,12 +76,12 @@ def callback_handler(call):
                 bot.edit_message_reply_markup(call.from_user.id, call.message.message_id, reply_markup=keyboard)
             case _:
                 channel_id = call.data
+                find_channel = channel_id.split("@")[-1]
                 count = bot.get_chat_member_count(channel_id)
-                ChannelModel.objects.get_or_create(
-                    _channel_username = channel_id.split("@")
+                target_channel = ChannelModel.objects.get(
+                    _channel_username = find_channel
                 )
-                countR = count - ChannelModel.users
-                user
+                countR = count - target_channel.users
                 bot.send_message(call.message.chat.id, f"تعداد عضوشدگان {channel_id}: \n {countR}")
                 
                     
@@ -142,7 +142,7 @@ def start(message):
 # تابع چک کردن عضویت
 @bot.message_handler(func=lambda message: True)
 def check_membership(message):
-    user =  getUser(message)
+    user =  getUser(message, bot)
 
     
     if user.can_add_admin and user.placeInBot == PlaceInBot.ADD_ADMIN:
@@ -165,10 +165,8 @@ def check_membership(message):
     if user.placeInBot == PlaceInBot.ADD_CHANNEL:
         try:
             count = bot.get_chat_member_count(f"@{message.text}")
-            channelcount=ChannelModel(users=count)
-            channeladd=ChannelModel(_channel_username=message.text)
+            channeladd=ChannelModel(_channel_username=message.text,users=int(count))
             channeladd.save()
-            channelcount.save()
             bot.reply_to(message, "کانال مورد نظر در لیست اسپانسر ها اضافه شد")
             
         except Exception as e:

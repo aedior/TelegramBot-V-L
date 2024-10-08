@@ -32,7 +32,6 @@ class UserModel(models.Model):
 class ChannelModel(models.Model):
     _channel_username = models.CharField(max_length=100)
     users = models.IntegerField()
-    user = models.IntegerField()
     
     
     @property
